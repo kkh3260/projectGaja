@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tje.mapper.MemberMapper">
+
+
+	<resultMap type="com.tje.domain.MemberVO" id="memberMap">
+		<id property="userid" column="userid" />
+		<result property="userid" column="userid" />
+		<result property="userpw" column="userpw" />
+		<result property="userName" column="username" />
+		<result property="phone" column="phone" />
+		<result property="email" column="email" />
+		<result property="gender" column="gender" />
+		<result property="birth" column="birth" />
+		<result property="regDate" column="regdate" />
+		<result property="updateDate" column="updatedate" />
+		<collection property="authList" resultMap="authMap">
+		</collection>
+	</resultMap>
+
+	<resultMap type="com.tje.domain.AuthVO" id="authMap">
+		<result property="userid" column="userid" />
+		<result property="auth" column="auth" />
+	</resultMap>
+
+	<select id="read" resultMap="memberMap">
+		SELECT
+		mem.userid, userpw, username,
+		enabled, phone,email,gender,birth, regdate, updatedate, auth
+		FROM
+		tbl_member mem LEFT OUTER JOIN tbl_member_auth auth on mem.userid =
+		auth.userid
+		WHERE mem.userid = #{userid}
+	</select>
+
+	<select id="confirmId" parameterType="String"
+		resultType="Integer">
+		SELECT COUNT(*) FROM tbl_member
+		WHERE
+		userid = #{userid}
+	</select>
+
+	<insert id="insert">
+		insert into
+		tbl_member(userid,userpw,username,phone,email,gender,birth)
+		values
+		(#{userid},#{userpw},#{userName},#{phone},#{email},#{gender},#{birth})
+	</insert>
+
+	<insert id="insert_Auth_ROLE_USER">
+		insert into tbl_member_auth (userid,auth)
+		values
+		(#{userid},#{auth})
+	</insert>
+
+
+	<delete id="delete">
+		delete tbl_member where userid=#{userid}
+	</delete>
+	<delete id="delete_Auth">
+		delete tbl_member_auth where userid=#{userid}
+	</delete>
+
+	<update id="update">
+		update tbl_member
+		set username=#{userName},
+		phone=#{phone},
+		email=#{email},
+		updateDate=sysdate
+		where userid=#{userid}
+	</update>
+
+	<update id="modify_Pw">
+		update tbl_member
+		set userpw=#{userpw}
+		where
+		userid=#{userid}
+	</update>
+	<select id="checkPw" parameterType="String" resultType="String">
+		SELECT
+		userpw FROM tbl_member
+		WHERE
+		userid = #{userid}
+	</select>
+
+</mapper>

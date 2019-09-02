@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tje.mapper.MypageMapper">
+	<select id="getSchedule" resultType="com.tje.domain.ScheduleVO">
+	<![CDATA[
+		select * from GAJA_SCHEDULE where userid=#{userid} and year=#{year} and month=#{month}
+    ]]>
+	</select>
+	
+	<select id="getHasSchedule" resultType="int">
+	<![CDATA[
+		select distinct day from GAJA_SCHEDULE where userid=#{userid} and year=#{year} and month=#{month} order by day
+    ]]>
+	</select>
+	
+	<select id="getScheduleList" resultType="com.tje.domain.ScheduleCartVO">
+	<![CDATA[
+		select * from GAJA_scecart where userid=#{userid}
+    ]]>
+	</select>
+	
+	<insert id="insertSchedule">
+		insert into GAJA_SCHEDULE(userid,contentid,contentname,year,month,day) 
+		select #{userid} as userid,#{contentid} as contentid,contentname,#{year} as year, #{month} as month, #{day} as day 
+		from GAJA_scecart where contentid=#{contentid} and userid=#{userid}
+	</insert>
+	
+	<delete id="deleteSchedule">
+		delete from GAJA_SCHEDULE where userid=#{userid} and year=#{year} and month=#{month} and day=#{day}
+	</delete>
+	
+	<delete id="deleteSC">
+		delete from GAJA_scecart where contentid=#{contentid}and userid=#{userid}
+	</delete>
+	
+	<insert id="addLocation">
+		insert into GAJA_scecart values (#{userid},#{contentid},#{contenttypeid},#{contentname})
+	</insert>
+</mapper>
